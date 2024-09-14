@@ -5,10 +5,12 @@ import com.neoteric.fullstackdemo_31._8._4.hibernatte.HibernatteUtils;
 import com.neoteric.fullstackdemo_31._8._4.model.Account;
 import com.neoteric.fullstackdemo_31._8._4.model.AccountAddressEntity;
 import com.neoteric.fullstackdemo_31._8._4.model.AccountEntity;
+import com.neoteric.fullstackdemo_31._8._4.model.Address;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -86,8 +88,38 @@ public class AccountService {
         transaction.commit();
         return accountEntity.getAccountnumber();
 
-
-
-
     }
+
+    public Account getAccount(String accountNumber)  {
+        SessionFactory sessionFactory = HibernatteUtils.getSessionFactory();
+        Session session = sessionFactory.openSession();
+
+          //  String hql = "FROM AccountEntity a WHERE a.accountnumber = :inputaccountNumber";
+            Query<AccountEntity> query = session.createQuery("FROM AccountEntity a WHERE a.accountnumber = :inputaccountNumber");
+            query.setParameter("inputaccountNumber", accountNumber);
+            AccountEntity accountEntity = query.list().get(0);
+
+                // Convert AccountEntity to Account
+           Account account = Account.builder()
+                        .name(accountEntity.getName())
+                        .pan(accountEntity.getPan())
+                        .mobileNumber(accountEntity.getMobileNumber())
+                        .balance(accountEntity.getBalance())
+                        .accountnumber(accountEntity.getAccountnumber())
+                        .address(
+                                Address.builder()
+                                        .add1(accountEntity.getAccountAddressEntityList().get(0).getAddress1())
+                                        .add2(accountEntity.getAccountAddressEntityList().get(0).getAddress2())
+                                        .pincode(accountEntity.getAccountAddressEntityList().get(0).getPincode())
+                                        .state(accountEntity.getAccountAddressEntityList().get(0).getState())
+                                        .city(accountEntity.getAccountAddressEntityList().get(0).getCity())
+                                        .build()
+                                )
+                   .build();
+
+
+        return account;
+    }
+
+
 }
