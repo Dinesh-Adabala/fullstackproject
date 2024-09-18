@@ -25,7 +25,7 @@ public class AccountEntity {
     private String balance;
 
 
-    @OneToMany(mappedBy = "accountEntity",cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "accountEntity",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     public List<AccountAddressEntity> accountAddressEntityList;
 
 }

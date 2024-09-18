@@ -6,7 +6,13 @@ import com.neoteric.fullstackdemo_31._8._4.model.Account;
 import com.neoteric.fullstackdemo_31._8._4.model.AccountAddressEntity;
 import com.neoteric.fullstackdemo_31._8._4.model.AccountEntity;
 import com.neoteric.fullstackdemo_31._8._4.model.Address;
-import org.hibernate.Hibernate;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -16,6 +22,7 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class AccountService {
@@ -90,7 +97,7 @@ public class AccountService {
 
     }
 
-    public Account getAccount(String accountNumber)  {
+    /*public Account getAccount(String accountNumber)  {
         SessionFactory sessionFactory = HibernatteUtils.getSessionFactory();
         Session session = sessionFactory.openSession();
 
@@ -119,7 +126,87 @@ public class AccountService {
 
 
         return account;
+    }*/
+
+
+    public List<Account> getAccount(String accountNumber) {
+        SessionFactory sessionFactory = HibernatteUtils.getSessionFactory();
+        Session session = sessionFactory.openSession();
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<AccountEntity> criteriaQuery = criteriaBuilder.createQuery(AccountEntity.class);
+        Root<AccountEntity> root = criteriaQuery.from(AccountEntity.class);
+
+        if (accountNumber != null && !accountNumber.isEmpty()) {
+            criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("accountnumber"), accountNumber));
+        } else {
+            criteriaQuery.select(root);
+        }
+
+        Query<AccountEntity> query = session.createQuery(criteriaQuery);
+        List<AccountEntity> accountEntities = query.getResultList();
+        List<Account> accounts = new ArrayList<>();
+        for (AccountEntity accountEntity : accountEntities) {
+
+            Address address = null;
+            if (!accountEntity.getAccountAddressEntityList().isEmpty()) {
+                AccountAddressEntity addressEntity = accountEntity.getAccountAddressEntityList().get(0);
+                address = Address.builder()
+                        .add1(addressEntity.getAddress1())
+                         .add2(addressEntity.getAddress2())
+                        .pincode(addressEntity.getPincode())
+                        .state(addressEntity.getState())
+                        .city(addressEntity.getCity())
+                        .build();
+            }
+ 
+            Account account = Account.builder()
+                    .name(accountEntity.getName())
+                    .pan(accountEntity.getPan())
+                    .mobileNumber(accountEntity.getMobileNumber())
+                    .balance(accountEntity.getBalance())
+                    .accountnumber(accountEntity.getAccountnumber())
+                    .address(address)
+                    .build();
+
+            accounts.add(account);
+        }
+
+        return accounts;
+
+
+
+
     }
 
+/*
+  public Account searchAccountByJPA (String accountNumber){
+      EntityManagerFactory emf=Persistence.createEntityManagerFactory("select a FROM AccountEntity a WHERE a.accountnumber = :inputaccountNumber");
+      EntityManager em=emf.createEntityManager();
+      em.getTransaction().begin();
+      jakarta.persistence.Query query = em.createQuery("select a FROM AccountEntity a WHERE a.accountnumber = :inputaccountNumber");
+      query.setParameter("inputAccountNumber",accountNumber);
 
+      List<AccountEntity> accountEntities = query.getResultList();
+      AccountEntity accountEntity = accountEntities.get(0);
+      Account account = Account.builder()
+              .name(accountEntity.getName())
+              .pan(accountEntity.getPan())
+              .mobileNumber(accountEntity.getMobileNumber())
+              .balance(accountEntity.getBalance())
+              .accountnumber(accountEntity.getAccountnumber())
+              .build();
+
+      List<AccountAddressEntity > accountAddressEntityList = accountEntity.getAccountAddressEntityList();
+      if (Objects.nonNull(accountAddressEntityList) && accountAddressEntityList.size()>0){
+          AccountAddressEntity addressEntity = accountEntity.getAccountAddressEntityList().get(0);
+        Address  address = Address.builder()
+                  .add1(addressEntity.getAddress1())
+                  .add2(addressEntity.getAddress2())
+                  .pincode(addressEntity.getPincode())
+                  .state(addressEntity.getState())
+                  .city(addressEntity.getCity())
+                  .build();
+      }
+      return account;
+  }*/
 }

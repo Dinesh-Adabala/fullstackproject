@@ -6,7 +6,7 @@ import com.neoteric.fullstackdemo_31._8._4.service.AccountService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
-
+import java.util.List;
 
 
 @RestController
@@ -45,13 +45,22 @@ public class AccountController {
     }
 
 
-    @GetMapping(value = "/api/sreachAccount",
+   /* @GetMapping(value = "/api/sreachAccount",
             consumes = "application/json",
             produces = "application/json")
-    public Account getAccountByAccountNumber(@RequestHeader("accountnumber") String accountNumber )  {
+    public List<Account> getAccountByAccountNumber(@RequestHeader("accountnumber") String accountNumber )  {
 
       AccountService accountService = new AccountService();
       return accountService.getAccount(accountNumber);
     }
+    @GetMapping(value = "/api/sreachAccountJPA",
+            consumes = "application/json",
+            produces = "application/json")
+    public Account getAccountByAccountNumberWithJPA(@RequestHeader("accountnumber") String accountNumber )  {
+
+        AccountService accountService = new AccountService();
+        return accountService.searchAccountByJPA(accountNumber);
+    }*/
+
 
 }
