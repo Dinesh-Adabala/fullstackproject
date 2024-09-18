@@ -45,7 +45,7 @@ public class AccountController {
     }
 
 
-   /* @GetMapping(value = "/api/sreachAccount",
+    @GetMapping(value = "/api/sreachAccount",
             consumes = "application/json",
             produces = "application/json")
     public List<Account> getAccountByAccountNumber(@RequestHeader("accountnumber") String accountNumber )  {
@@ -53,14 +53,14 @@ public class AccountController {
       AccountService accountService = new AccountService();
       return accountService.getAccount(accountNumber);
     }
-    @GetMapping(value = "/api/sreachAccountJPA",
+    /*@GetMapping(value = "/api/sreachAccountJPA",
             consumes = "application/json",
             produces = "application/json")
     public Account getAccountByAccountNumberWithJPA(@RequestHeader("accountnumber") String accountNumber )  {
 
         AccountService accountService = new AccountService();
         return accountService.searchAccountByJPA(accountNumber);
-    }*/
-
+    }
+*/
 
 }
