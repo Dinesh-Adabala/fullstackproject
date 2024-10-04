@@ -1,9 +1,7 @@
 package com.neoteric.fullstackdemo_31._8._4.controller;
-
-import com.neoteric.fullstackdemo_31._8._4.exception.AccountCreationFailedException;
 import com.neoteric.fullstackdemo_31._8._4.model.Account;
 import com.neoteric.fullstackdemo_31._8._4.service.AccountService;
-import org.springframework.http.HttpHeaders;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +10,10 @@ import java.util.List;
 @RestController
 @CrossOrigin("*")
 public class AccountController {
+    @Autowired
+    AccountService accountS;
+
+
     @PostMapping(value = "/api/createAccount/jdbc",
             consumes = "application/json",
             produces = "application/json")
@@ -53,6 +55,7 @@ public class AccountController {
       AccountService accountService = new AccountService();
       return accountService.getAccount(accountNumber);
     }
+
     /*@GetMapping(value = "/api/sreachAccountJPA",
             consumes = "application/json",
             produces = "application/json")
@@ -61,6 +64,13 @@ public class AccountController {
         AccountService accountService = new AccountService();
         return accountService.searchAccountByJPA(accountNumber);
     }
-*/
+
+
+   /* @GetMapping(value = "/api/sreachAccount",
+            consumes = "application/json",
+            produces = "application/json")
+    public Account getAccountByDataJPA(@RequestHeader("accountnumber") String accountNumber )  {
+        return accountS.getAccountByDataJPA(accountNumber);
+    }*/
 
 }

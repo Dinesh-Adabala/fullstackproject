@@ -2,11 +2,13 @@ package com.neoteric.fullstackdemo_31._8._4.service;
 
 import com.neoteric.fullstackdemo_31._8._4.exception.AccountCreationFailedException;
 import com.neoteric.fullstackdemo_31._8._4.hibernatte.HibernatteUtils;
+import com.neoteric.fullstackdemo_31._8._4.mapper.AccountMapper;
 import com.neoteric.fullstackdemo_31._8._4.model.Account;
 import com.neoteric.fullstackdemo_31._8._4.model.AccountAddressEntity;
 import com.neoteric.fullstackdemo_31._8._4.model.AccountEntity;
 import com.neoteric.fullstackdemo_31._8._4.model.Address;
 
+//import com.neoteric.fullstackdemo_31._8._4.repository.AccountRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -17,6 +19,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -25,7 +29,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+@Service
 public class AccountService {
+   /* @Autowired
+    AccountRepository accountRepository;
+*/
+    @Autowired
+    AccountMapper accountMapper;
+
     public String createAccount(Account account) throws Exception{
         String accountNumber=null;
         try {
@@ -209,4 +220,12 @@ public class AccountService {
       }
       return account;
   }*/
+/*public Account getAccountByDataJPA(String accountNumber)  {
+    AccountEntity  accountEntity = accountRepository.findByAccountNumber(accountNumber);
+    Account account = accountMapper.dtoToEntity(accountEntity);
+    return account;
+}*/
+
+
+
 }
